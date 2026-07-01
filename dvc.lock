@@ -1,0 +1,204 @@
+schema: '2.0'
+stages:
+  validate:
+    cmd: python main.py validate
+    deps:
+    - path: data/raw/DS_Seguro_Antirobos.csv
+      hash: md5
+      md5: f65789bcd36954f155c186bc76c33fd2
+      size: 1745106
+    - path: main.py
+      hash: md5
+      md5: ea5ab3c3f6a9d4d5e9adb98a0534fead
+      size: 6650
+    - path: params.yaml
+      hash: md5
+      md5: 1610c149e3894626e5be04dfe97a596c
+      size: 1701
+    - path: src/features/data_validation.py
+      hash: md5
+      md5: 193f28d03f6e056e9ba9d0858245733b
+      size: 3846
+    - path: src/features/preprocessing.py
+      hash: md5
+      md5: 4b69929fc23ad937573867f81d7a358f
+      size: 5378
+  split:
+    cmd: python main.py split
+    deps:
+    - path: data/raw/DS_Seguro_Antirobos.csv
+      hash: md5
+      md5: f65789bcd36954f155c186bc76c33fd2
+      size: 1745106
+    - path: main.py
+      hash: md5
+      md5: ea5ab3c3f6a9d4d5e9adb98a0534fead
+      size: 6650
+    - path: params.yaml
+      hash: md5
+      md5: 1610c149e3894626e5be04dfe97a596c
+      size: 1701
+    - path: src/features/data_validation.py
+      hash: md5
+      md5: 193f28d03f6e056e9ba9d0858245733b
+      size: 3846
+    - path: src/features/preprocessing.py
+      hash: md5
+      md5: 4b69929fc23ad937573867f81d7a358f
+      size: 5378
+    - path: src/features/split_data.py
+      hash: md5
+      md5: 70f723dbee74250239b453ce51840b96
+      size: 3704
+    params:
+      params.yaml:
+        data.random_state: 42
+        data.test_size: 0.15
+        data.validation_size: 0.15
+    outs:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 74ed3752f2cb8df7820aab75d2b50c28
+      size: 299530
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 5548b4cd31ca8c66b08bf5df6471a5af
+      size: 1395245
+    - path: data/processed/validation.csv
+      hash: md5
+      md5: fac4a66eef8a1e569fee644af4dc4184
+      size: 298966
+  train:
+    cmd: python main.py train
+    deps:
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 5548b4cd31ca8c66b08bf5df6471a5af
+      size: 1395245
+    - path: data/processed/validation.csv
+      hash: md5
+      md5: fac4a66eef8a1e569fee644af4dc4184
+      size: 298966
+    - path: main.py
+      hash: md5
+      md5: ea5ab3c3f6a9d4d5e9adb98a0534fead
+      size: 6650
+    - path: params.yaml
+      hash: md5
+      md5: 1610c149e3894626e5be04dfe97a596c
+      size: 1701
+    - path: src/features/feature_engineering.py
+      hash: md5
+      md5: 6c9eae955666dd0911d9756693501b22
+      size: 2982
+    - path: src/features/preprocessing.py
+      hash: md5
+      md5: 4b69929fc23ad937573867f81d7a358f
+      size: 5378
+    - path: src/models/evaluate.py
+      hash: md5
+      md5: 354e7aa05adfe163003eb6f2b429c8e2
+      size: 6101
+    - path: src/models/mlflow_tracking.py
+      hash: md5
+      md5: 34e6b9e6c85618b5f8e09c606ebc5f0e
+      size: 2670
+    - path: src/models/save_model.py
+      hash: md5
+      md5: f8172805c6e5818ef78a4c8fc82935ef
+      size: 1951
+    - path: src/models/train.py
+      hash: md5
+      md5: 72a741a22eb6ac50890c924ee6b6e241
+      size: 7942
+    params:
+      params.yaml:
+        evaluation:
+          primary_metric: recall
+          secondary_metric: roc_auc
+          scoring_bands:
+            high: 0.7
+            medium: 0.5
+        feature_engineering:
+          select_k_best: 15
+          score_func: f_classif
+        mlflow:
+          tracking_uri: mlruns
+          experiment_name: seguro_antirobos
+          registry_model_name: SeguroAntirobosModel
+        models:
+          decision_tree:
+            max_depth: 5
+            random_state: 42
+          random_forest:
+            n_estimators: 200
+            max_depth:
+            random_state: 42
+            n_jobs: -1
+          xgboost:
+            n_estimators: 200
+            learning_rate: 0.1
+            max_depth: 4
+            subsample: 0.8
+            colsample_bytree: 0.8
+            random_state: 42
+            eval_metric: logloss
+            n_jobs: -1
+        preprocessing:
+          outlier_cap_quantile: 0.99
+          numeric_impute_strategy: median
+          categorical_impute_strategy: most_frequent
+        resampling:
+          method: smote
+          random_state: 42
+    outs:
+    - path: models/model.pkl
+      hash: md5
+      md5: cf6eaa295ed398811f7d575f1829358e
+      size: 41968135
+    - path: models/model_metadata.json
+      hash: md5
+      md5: 86bd523f768512e7e4290a47f5184552
+      size: 1247
+    - path: reports/figures/validation
+      hash: md5
+      md5: a10f1d5f0c654c382fa6db6f2045e275.dir
+      size: 285483
+      nfiles: 9
+    - path: reports/train_metrics.json
+      hash: md5
+      md5: 9131afa3dea9b47a98bed14905860c12
+      size: 733
+  evaluate:
+    cmd: python main.py evaluate
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 74ed3752f2cb8df7820aab75d2b50c28
+      size: 299530
+    - path: main.py
+      hash: md5
+      md5: ea5ab3c3f6a9d4d5e9adb98a0534fead
+      size: 6650
+    - path: models/model.pkl
+      hash: md5
+      md5: cf6eaa295ed398811f7d575f1829358e
+      size: 41968135
+    - path: params.yaml
+      hash: md5
+      md5: 1610c149e3894626e5be04dfe97a596c
+      size: 1701
+    - path: src/models/evaluate.py
+      hash: md5
+      md5: 354e7aa05adfe163003eb6f2b429c8e2
+      size: 6101
+    outs:
+    - path: reports/figures/test
+      hash: md5
+      md5: 54b3842492a19dc768b4f231f7cc16b6.dir
+      size: 109152
+      nfiles: 4
+    - path: reports/test_metrics.json
+      hash: md5
+      md5: af9d915e121ab602975c2780af5973d5
+      size: 175

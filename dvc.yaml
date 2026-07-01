@@ -1,0 +1,71 @@
+stages:
+  validate:
+    cmd: python main.py validate
+    deps:
+      - data/raw/DS_Seguro_Antirobos.csv
+      - src/features/data_validation.py
+      - src/features/preprocessing.py
+      - main.py
+      - params.yaml
+
+  split:
+    cmd: python main.py split
+    deps:
+      - data/raw/DS_Seguro_Antirobos.csv
+      - src/features/split_data.py
+      - src/features/preprocessing.py
+      - src/features/data_validation.py
+      - main.py
+      - params.yaml
+    params:
+      - data.test_size
+      - data.validation_size
+      - data.random_state
+    outs:
+      - data/processed/train.csv
+      - data/processed/validation.csv
+      - data/processed/test.csv
+
+  train:
+    cmd: python main.py train
+    deps:
+      - data/processed/train.csv
+      - data/processed/validation.csv
+      - src/models/train.py
+      - src/models/evaluate.py
+      - src/models/mlflow_tracking.py
+      - src/models/save_model.py
+      - src/features/feature_engineering.py
+      - src/features/preprocessing.py
+      - main.py
+      - params.yaml
+    params:
+      - preprocessing
+      - feature_engineering
+      - resampling
+      - models
+      - evaluation
+      - mlflow
+    outs:
+      - models/model.pkl
+      - models/model_metadata.json
+      - reports/figures/validation:
+          cache: false
+    metrics:
+      - reports/train_metrics.json:
+          cache: false
+
+  evaluate:
+    cmd: python main.py evaluate
+    deps:
+      - data/processed/test.csv
+      - models/model.pkl
+      - src/models/evaluate.py
+      - main.py
+      - params.yaml
+    outs:
+      - reports/figures/test:
+          cache: false
+    metrics:
+      - reports/test_metrics.json:
+          cache: false

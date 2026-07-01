@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Data (versionado con DVC, no con Git)
+data/raw/*.csv
+data/processed/*.csv
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Modelos y artefactos generados
+models/*.pkl
+models/*.json
+reports/figures/**
+!reports/figures/.gitkeep
+logs/*.log
+
+# MLflow
+mlruns/
+mlartifacts/
+
+# DVC
+/.dvc/cache
+/.dvc/tmp
+
+# IDE / OS
+.vscode/
+.idea/
+.claude/settings.local.json
+.DS_Store
+Thumbs.db

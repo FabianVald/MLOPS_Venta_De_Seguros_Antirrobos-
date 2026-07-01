@@ -1,0 +1,34 @@
+# Configuración de infraestructura y rutas del proyecto.
+# params.yaml controla los HIPERPARÁMETROS del experimento (lo que DVC versiona).
+# config.yaml controla RUTAS y CONFIGURACIÓN DE SERVICIOS (lo que no cambia entre runs).
+
+project:
+  name: seguro-antirobos-mlops
+  description: >
+    Modelo de propensión a la compra del Seguro Antirrobos (billetera, celular, laptop)
+    para clientes de tarjeta de crédito.
+
+paths:
+  params_file: params.yaml
+  logging_config: configs/logging.yaml
+  raw_data: data/raw/DS_Seguro_Antirobos.csv
+  processed_dir: data/processed
+  model_dir: models
+  model_file: models/model.pkl
+  model_metadata_file: models/model_metadata.json
+  reports_dir: reports
+  figures_dir: reports/figures
+  logs_dir: logs
+
+mlflow:
+  tracking_uri: mlruns
+  experiment_name: seguro_antirobos
+  registry_model_name: SeguroAntirobosModel
+
+api:
+  title: Seguro Antirrobos Propensity API
+  version: "1.0.0"
+  host: 0.0.0.0
+  port: 8000
+  model_path: models/model.pkl
+  model_metadata_path: models/model_metadata.json

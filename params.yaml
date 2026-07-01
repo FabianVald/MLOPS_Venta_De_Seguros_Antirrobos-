@@ -1,0 +1,88 @@
+# Parámetros reproducibles del pipeline de Seguro Antirrobos.
+# Cualquier valor que pueda cambiar entre corridas vive aquí, nunca hardcodeado en el código.
+
+data:
+  raw_path: data/raw/DS_Seguro_Antirobos.csv
+  processed_dir: data/processed
+  train_path: data/processed/train.csv
+  validation_path: data/processed/validation.csv
+  test_path: data/processed/test.csv
+  sep: ";"
+  encoding: "utf-8"
+  test_size: 0.15
+  validation_size: 0.15
+  random_state: 42
+
+target:
+  column: FLAG_SS
+  positive_label: 1
+  negative_label: 0
+
+columns:
+  numeric:
+    - Mto_TC
+    - SUELDO_ESTIMADO
+    - EDAD
+    - ANTIGUEDAD_MES
+  categorical:
+    - MARCA
+    - Nombre_territorio
+    - FLAG_LIMA_PROVINCIA
+    - REGION
+    - SEXO
+    - SEGMENTO
+    - FLAG_UNICEF
+
+preprocessing:
+  outlier_cap_quantile: 0.99
+  numeric_impute_strategy: median
+  categorical_impute_strategy: most_frequent
+
+feature_engineering:
+  select_k_best: 15
+  score_func: f_classif
+
+resampling:
+  method: smote
+  random_state: 42
+
+models:
+  decision_tree:
+    max_depth: 5
+    random_state: 42
+  random_forest:
+    n_estimators: 200
+    max_depth: null
+    random_state: 42
+    n_jobs: -1
+  xgboost:
+    n_estimators: 200
+    learning_rate: 0.1
+    max_depth: 4
+    subsample: 0.8
+    colsample_bytree: 0.8
+    random_state: 42
+    eval_metric: logloss
+    n_jobs: -1
+
+evaluation:
+  primary_metric: recall
+  secondary_metric: roc_auc
+  scoring_bands:
+    high: 0.70
+    medium: 0.50
+
+mlflow:
+  tracking_uri: mlruns
+  experiment_name: seguro_antirobos
+  registry_model_name: SeguroAntirobosModel
+
+artifacts:
+  model_dir: models
+  model_filename: model.pkl
+  figures_dir: reports/figures
+  metrics_dir: reports
+
+api:
+  host: 0.0.0.0
+  port: 8000
