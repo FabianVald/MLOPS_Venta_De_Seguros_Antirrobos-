@@ -85,6 +85,8 @@ Modelo seleccionado: random_forest (recall=0.30, roc_auc=0.79)
 ```
 
 y al terminar: `Use 'dvc push' to send your updates to remote storage.`
+(ese mensaje es genérico de DVC; este proyecto no usa un remote externo —el
+dataset crudo viaja versionado directamente en Git— así que se puede ignorar).
 
 > Si prefieres correr cada etapa por separado (más explícito para explicarle
 > a alguien paso a paso): `python main.py validate`, luego `split`, `train`,
@@ -175,7 +177,7 @@ docker run -p 8000:8000 seguro-antirobos-mlops:latest
 ```
 my-ml-project/
 ├── data/
-│   ├── raw/DS_Seguro_Antirobos.csv        # dataset original (versionado con DVC)
+│   ├── raw/DS_Seguro_Antirobos.csv        # dataset original (versionado en Git)
 │   └── processed/{train,validation,test}.csv
 ├── notebooks/                              # EDA original, ya no es la solución productiva
 ├── docs/                                   # diccionario de datos, PDF del curso, presentación

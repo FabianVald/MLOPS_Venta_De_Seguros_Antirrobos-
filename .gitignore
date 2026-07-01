@@ -13,10 +13,11 @@ venv/
 .coverage
 htmlcov/
 
-# Data (versionado con DVC, no con Git)
-data/raw/*.csv
+# Datos crudos: dataset pequeño y estático (~1.7MB), se versiona directamente
+# en Git para que `git clone` + `dvc repro` funcione sin configurar un remote
+# de DVC (S3/GCS/Azure). Los datos PROCESADOS sí se excluyen: son
+# reproducibles ejecutando el pipeline (dvc.yaml), no deben vivir en Git.
 data/processed/*.csv
-!data/raw/.gitkeep
 !data/processed/.gitkeep
 
 # Modelos y artefactos generados
