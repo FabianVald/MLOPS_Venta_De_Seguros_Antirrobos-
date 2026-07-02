@@ -9,6 +9,7 @@ import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 
 from src.api.routes import router
 from src.config import load_config, load_params, resolve_path
@@ -56,3 +57,9 @@ app = FastAPI(
     lifespan=lifespan,
 )
 app.include_router(router)
+
+
+@app.get("/", include_in_schema=False)
+def root() -> RedirectResponse:
+    """Redirige la raíz a la documentación interactiva de la API."""
+    return RedirectResponse(url="/docs")
