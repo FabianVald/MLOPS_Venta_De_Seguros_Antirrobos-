@@ -1,5 +1,7 @@
 # Seguro Antirrobos — Modelo de Propensión a la Compra (MLOps)
 
+![Cabecera](img/cabecera.png)
+
 Pipeline productivo, modular y reproducible que predice qué clientes de tarjeta
 de crédito tienen mayor probabilidad de aceptar el **Seguro Antirrobos**
 (coberturas: billetera S/.50, celular S/.350, laptop S/.680), construido a
